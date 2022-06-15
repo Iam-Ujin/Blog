@@ -1,6 +1,7 @@
 import "./App.css";
 import Modal from "./components/Modal";
 import { useState } from "react";
+import React from "react";
 
 function App() {
   let titArray = [
@@ -101,11 +102,37 @@ function App() {
         입력
       </button>
 
+      <Profile />
+
       {modal == true ? (
         <Modal title={title} titIndex={titIndex} changeTitle={changeTitle} />
       ) : null}
     </div>
   );
+}
+
+class Profile extends React.Component {
+  constructor() {
+    super();
+    this.state = { name: "이름", name2: "ujin", age: 26 };
+  }
+
+  // 이벤트핸들러에 bind 제거하고 싶으면 함수만들 때 화살표함수로 작성 함수 = () => {}
+  changeName() {
+    this.setState({ name: "별명", name2: "전어" });
+  }
+
+  render() {
+    return (
+      <div>
+        <h3>프로필</h3>
+        <p>
+          내 {this.state.name}은 {this.state.name2} , {this.state.age}인디.
+        </p>
+        <button onClick={this.changeName.bind(this)}>별명 버튼</button>
+      </div>
+    );
+  }
 }
 
 export default App;
