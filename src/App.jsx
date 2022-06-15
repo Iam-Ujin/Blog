@@ -8,13 +8,13 @@ function App() {
     "문성현 코로나ㅋ🦠",
     "날씨가 벌써 덥다🔥",
   ];
-  let [title, setTitle] = useState(titArray);
-  let [like, setLike] = useState(0);
-  let [modal, setModal] = useState(false);
+  let likeArray = [0, 0, 0];
 
-  function clickLike() {
-    setLike(like + 1);
-  }
+  let [title, setTitle] = useState(titArray);
+  let [like, setLike] = useState(likeArray);
+  let [modal, setModal] = useState(false);
+  let [titIndex, setTitIndex] = useState(0);
+  let [inputValue, setInputValue] = useState("");
 
   function changeTitle() {
     let newTitle = [...title];
@@ -30,6 +30,7 @@ function App() {
   function showModal() {
     modal == true ? setModal(false) : setModal(true);
   }
+
   return (
     <div className="App">
       <div className="black-nav">
@@ -40,17 +41,69 @@ function App() {
       {title.map((tit, idx) => {
         return (
           <div className="list" key={idx}>
-            <h4 onClick={showModal}>
+            <h4
+              onClick={() => {
+                showModal();
+                setTitIndex(idx);
+              }}
+            >
               {tit}
-              <span onClick={clickLike}>🖤</span>
-              {like}
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  let newLike = [...like];
+                  newLike[idx] += 1;
+                  setLike(newLike);
+                }}
+              >
+                좋아요🖤
+              </span>
+              {like[idx]}
             </h4>
             <p>6월 9일 발행</p>
+            <button
+              onClick={() => {
+                let copy = [...title];
+                copy.splice(idx, 1);
+                setTitle(copy);
+                let copy2 = [...like];
+                copy2.splice(idx, 1);
+                setLike(copy2);
+              }}
+            >
+              삭제
+            </button>
           </div>
         );
       })}
 
-      {modal == true ? <Modal /> : null}
+      <input
+        type="text"
+        onChange={(e) => {
+          setInputValue(e.target.value);
+        }}
+      />
+      <button
+        onClick={() => {
+          if (inputValue === "") {
+            alert("내용을 입력해주새요!👷🏻‍♀️");
+          } else {
+            let copy = [...title];
+            copy.unshift(inputValue);
+            setTitle(copy);
+            let copy2 = [...like];
+            copy2.unshift(0);
+            setLike(copy2);
+          }
+          return setInputValue("");
+        }}
+      >
+        입력
+      </button>
+
+      {modal == true ? (
+        <Modal title={title} titIndex={titIndex} changeTitle={changeTitle} />
+      ) : null}
     </div>
   );
 }
